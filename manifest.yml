@@ -1,0 +1,8 @@
+applications:
+- path: target/JspChat.war
+  memory: 256M
+  instances: 1
+  domain: mybluemix.net
+  name: JspChat
+  host: JspChat
+  disk_quota: 1024M
