@@ -7,15 +7,6 @@ import java.util.*;
  */
 public class ManageChat {
 
-    private static ManageChat instance;
-
-    public static ManageChat getInstance(){
-        if(instance == null){
-            instance = new ManageChat();
-        }
-        return instance;
-    }
-
     private int messages_size = 15;
     private List<Message> messages = new LinkedList<>();
     private Map<String, Person> activeUsers = new HashMap<>();

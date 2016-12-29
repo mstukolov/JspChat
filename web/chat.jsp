@@ -40,7 +40,6 @@
                 $("#users").load("chat.jsp #users");
               }, 1000
       );
-
     })
 </script>
 
@@ -48,7 +47,10 @@
   <h1>Это главная страница чата</h1>
   <%
     Object userName = request.getSession().getValue("userName");
+    Object email = getServletConfig().getServletContext().getInitParameter("email");
+    ManageChat manageChat = (ManageChat)config.getServletContext().getAttribute("manageChat");
   %>
+  <p><%=email%></p>
   <table>
     <tr>
       <td><label>Hello,</label></td>
@@ -60,14 +62,15 @@
       </td>
     </tr>
   </table>
-
   <form method="POST" action="ChatServlet">
     <table>
       <tr>
         <td>
           <div class="div-chat-window" id="chat">
             <%
-              ListIterator itr = ManageChat.getInstance().getMessages();
+
+              //ListIterator itr = ManageChat.getMessages();
+              ListIterator itr = manageChat.getMessages();
               while (itr.hasNext()){
                   Message msg = (Message) itr.next(); %>
               <span style="color: <%=msg.getColor()%>;">
@@ -84,7 +87,7 @@
           <div class="div-users-window" id="users">
             <span style="font-style: italic"><h3>Сейчас в чате:</h3></span>
 
-            <% for (Map.Entry<String, Person> entry : ManageChat.getInstance().getActiveUsers().entrySet()) { %>
+            <% for (Map.Entry<String, Person> entry : manageChat.getActiveUsers().entrySet()) { %>
                 <span style="color: <%=entry.getValue().getColor()%>"><%= entry.getKey() %></span><br>
             <%
               }

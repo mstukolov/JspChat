@@ -1,5 +1,7 @@
 package ru.maks.chat;
 
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -18,6 +20,9 @@ public class LoginServlet extends HttpServlet {
     private String contextPath = "";
     private String userName;
     private String color;
+    private ManageChat manageChat;
+
+
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -25,22 +30,31 @@ public class LoginServlet extends HttpServlet {
         super();
         // TODO Auto-generated constructor stub
     }
-
-    /**
+    public void init(){
+        manageChat = new ManageChat();
+    }
+     /**
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
      */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+        ServletContext sc = getServletContext();
+        System.out.println ("Email = " + sc.getInitParameter("email"));
+
+        /*sc.setAttribute("manageChat", manageChat);*/
+        manageChat = (ManageChat) sc.getAttribute("manageChat");
+
         process(request, response);
+        HttpSession session = request.getSession();
 
         try {
-                HttpSession session = request.getSession();
+
                 session.setAttribute("color", color);
                 session.setAttribute("userName", userName);
 
                 checkSessionTimeout(session);
 
-                ManageChat.getInstance().addPerson(userName, color);
+                manageChat.addPerson(userName, color);
                 response.sendRedirect(request.getContextPath() + "/chat.jsp");
 
         }catch (Exception exception)
@@ -57,7 +71,7 @@ public class LoginServlet extends HttpServlet {
         process(request, response);
 
         try {
-            ManageChat.getInstance().exitPerson(userName);
+            manageChat.exitPerson(userName);
             response.sendRedirect(contextPath + "/index.jsp");
         }catch (Exception exception) {
             System.out.println("Exception thrown in LoginServlet: " + exception.getMessage());
@@ -91,5 +105,9 @@ public class LoginServlet extends HttpServlet {
             }
         }
         session.setMaxInactiveInterval(timeout);
+    }
+
+    public ManageChat getManageChat() {
+        return manageChat;
     }
 }
